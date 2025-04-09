@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="/passkey.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+    <title>Passkeys Codelab</title>
+
+    <link rel="stylesheet" href="src/style.css">
+  </head>
+  <body>
+    <main>
+      <section>
+        <header>
+          <h1>Passkeys codelab</h1>
+        </header>
+
+        <form id="form" method="POST" action="/auth/password">
+          <fieldset>
+            <legend>Reauthorize</legend>
+              <input type="password" id="password" name="password" value="f2xELEPgKpuz" autocomplete="current-password" placeholder="Enter your password" autofocus required>
+              <button type="submit">Next</button>
+              <p>password will be ignored in this demo.</p>
+          </fieldset>
+        </form>
+      </section>
+    </main>
+    <script type="module" src="/src/reauth.js"></script>
+  </body>
+</html>

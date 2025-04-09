@@ -1,0 +1,32 @@
+{
+  "references": [
+    {"path": "./src/"},
+    // {"path": "./server/"},
+  ],
+
+  // Base compiler options for all tsconfig files.
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "outDir": ".tmp/tsbuildinfo/",
+    "rootDir": ".",
+
+    // Limit to base JS defs, and no types from node_modules by default.
+    "lib": ["esnext"],
+    "types": [],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+
+    "useUnknownInCatchVariables": false,
+  },
+  "files": [],
+  "include": [],
+  "exclude": [],
+}

@@ -1,0 +1,32 @@
+{
+  "name": "passkey-codelab",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server/index.js",
+    "dev:watch": "vite build --watch & node --watch server/index.js & wait",
+    "type-check": "tsc --build ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/express-session": "^1.18.1",
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.5"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^7.4.0",
+    "base64url": "^3.0.1",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "express-useragent": "^1.0.15",
+    "hbs": "^4.2.0",
+    "lit-html": "^3.2.1",
+    "lowdb": "^5.1.0",
+    "open-props": "^1.7.14"
+  }
+}

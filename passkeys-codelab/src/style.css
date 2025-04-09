@@ -1,0 +1,61 @@
+@import 'open-props/style' layer(openprops);
+@import 'open-props/normalize' layer(openprops.more);
+@import 'open-props/buttons' layer(openprops.more);
+
+@layer app {
+  body {
+    display: grid;
+    justify-content: center;
+    padding: var(--size-7);
+    gap: var(--size-7);
+    background-color: var(--surface-2);
+  }
+
+  section {
+    padding: var(--size-5);
+    box-shadow: var(--shadow-6);
+    background-color: var(--surface-1);
+    min-inline-size: var(--size-content-2);
+    margin-bottom: var(--size-5);
+
+    & header {
+      text-align: center;
+    }
+  }
+
+  h1 {
+    font-size: var(--font-size-4);
+    font-weight: var(--font-weight-3);
+    max-inline-size: none;
+  }
+
+  h2 {
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-2);
+    max-inline-size: none;
+  }
+
+  section, fieldset {
+    display: grid;
+    gap: var(--size-4);
+    color: var(--text-2);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+
+    &>span {
+      flex-grow: 1;
+    }
+    &>button {
+      flex-shrink: 0;
+      border: none;
+    }
+  }
+}

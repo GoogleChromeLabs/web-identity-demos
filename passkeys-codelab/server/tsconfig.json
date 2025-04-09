@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // Selectively include node_modules types as needed.
+    "types": ["node", "express", "express-session"],
+  },
+  "references": [],
+  "include": [
+    "**/*.js",
+  ],
+}

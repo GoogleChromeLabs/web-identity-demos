@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // Only include in-browser types.
+    "types": [],
+    "lib": ["ES2022", "dom", "dom.iterable"],
+  },
+  "references": [],
+  "include": [
+    "**/*.js",
+  ],
+}
