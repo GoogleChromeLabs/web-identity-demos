@@ -149,7 +149,7 @@ router.get('/signout', (req, res) => {
 router.post('/getKeys', csrfCheck, sessionCheck, async (req, res) => {
   const { user } = res.locals;
   const credentials = Credentials.findByUserId(user.id);
-  return res.json(credentials || {});
+  return res.json(credentials || []);
 });
 
 router.post('/renameKey', csrfCheck, sessionCheck, async (req, res) => {

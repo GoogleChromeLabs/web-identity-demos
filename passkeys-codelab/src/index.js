@@ -4,50 +4,56 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {$, _fetch} from './client.js';
+import {authFetch} from './client.js';
 
-export async function authenticate() {
-  const options = await _fetch('/auth/signinRequest');
+/**
+ * Makes a conditional call to WebAuthn `navigator.credentials.get()`, and
+ * fulfills if the user selects an autofill passkey with whether the
+ * selected credential is valid.
+ * Note that the Promise this function returns will never be fulfilled if the
+ * user does not select an autofill passkey.
+ * @return {Promise<boolean>}
+ */
+export async function conditionalAuthenticate() {
+  const options = await authFetch('/auth/signinRequest');
 
   const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(options);
-  // options.allowCredentials = []; // TODO(bckenny): this is the default, but some case that needs it?
 
-  // Request a conditional UI using the WebAuthn get() method.
+  // Request a conditional passkey autofill using the WebAuthn get() method.
   const credential = await navigator.credentials.get({
     publicKey,
     mediation: 'conditional'
   });
-  if (!credential) {
-    return;
-  }
-  return await _fetch(`/auth/signinResponse`, credential);
+  if (!credential) return false;
+
+  await authFetch(`/auth/signinResponse`, credential);
+  return true;
 };
 
 /**
  * @param {SubmitEvent} s
  */
-async function submit(s) {
-  if (!s.target || !(s.target instanceof HTMLFormElement)) return;
+async function submitHandler(s) {
+  if (!(s.target instanceof HTMLFormElement)) return;
 
   s.preventDefault();
   const formData = new FormData(s.target);
   const login = Object.fromEntries(formData);
 
   try {
-    await _fetch('/auth/username', login);
+    await authFetch('/auth/username', login);
     location.href = '/reauth';
 
   } catch(e) {
-    // loading.stop();
     console.error(e.message);
     alert(e);
   }
 }
 
 async function setup() {
-  const form = $('form');
+  const form = document.querySelector('form');
   if (!form) return;
-  form.addEventListener('submit', submit);
+  form.addEventListener('submit', submitHandler);
 
   // Add passkeys to the browser autofill: Detect features, invoke WebAuthn, and enable a conditional UI.
   if (!window.PublicKeyCredential || !PublicKeyCredential.isConditionalMediationAvailable) {
@@ -61,22 +67,13 @@ async function setup() {
       return;
     }
 
-    // If conditional UI is available, invoke the authenticate() function.
-    const user = await authenticate();
-    if (user) {
-      // Proceed only when authentication succeeds.
-      const usernameInput = $('#username');
-      if (!(usernameInput instanceof HTMLInputElement)) {
-        return;
-      }
-      usernameInput.value = user.username; // TODO(bckenny): why is this needed?
-      // loading.start();
+    if (await conditionalAuthenticate()) {
       location.href = '/profile';
-    } else {
-      throw new Error('User not found.');
+      return;
     }
+
+    throw new Error('User not found.');
   } catch (e) {
-    // loading.stop();
     // A NotAllowedError indicates that the user canceled the operation.
     if (e.name === 'NotAllowedError') {
       return;

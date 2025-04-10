@@ -4,31 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const $ = document.querySelector.bind(document);
-
-export const base64url = {
-  /** @param {ArrayBuffer} buffer */
-  encode: function(buffer) {
-    const base64 = window.btoa(String.fromCharCode(...new Uint8Array(buffer)));
-    return base64.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-  },
-  /** @param {string} base64url */
-  decode: function(base64url) {
-    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-    const binStr = window.atob(base64);
-    const bin = new Uint8Array(binStr.length);
-    for (let i = 0; i < binStr.length; i++) {
-      bin[i] = binStr.charCodeAt(i);
-    }
-    return bin.buffer;
-  }
-}
-
 /**
  * @param {string} path
- * @param {string|Credential} payload
+ * @param {string|Credential|Record<string, FormDataEntryValue>} payload
  */
-export async function _fetch(path, payload = '') {
+export async function authFetch(path, payload = '') {
   /** @type {Record<string, string>} */
   const headers = {
     'X-Requested-With': 'XMLHttpRequest',

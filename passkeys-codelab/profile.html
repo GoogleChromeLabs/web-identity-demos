@@ -8,7 +8,7 @@
     <title>Profile - Passkeys Codelab</title>
 
     <link rel="stylesheet" href="src/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete,edit">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete,edit,fingerprint">
   </head>
   <body>
     <main>
@@ -24,10 +24,12 @@
       <section>
         <h2>Your registered passkeys:</h2>
         <ul id="passkeys"></ul>
-        <button id="create-passkey" class="hidden" icon="fingerprint" raised>Create a passkey</button>
+        <button id="create-passkey" class="hidden">
+          <span class="material-symbols-outlined">fingerprint</span>Create a passkey
+        </button>
       </section>
 
-      <p id="message"></p>
+      <p id="no-passkeys"></p>
 
       <p>
         <a href="/auth/signout">Sign out</a>

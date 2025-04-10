@@ -56,6 +56,8 @@
     &>button {
       flex-shrink: 0;
       border: none;
+      /* inset version of open-props button shadow */
+      box-shadow: inset var(--shadow-2), inset 0 1px var(--surface-3), inset 0 0 0 var(--_highlight-size) var(--_highlight);
     }
   }
 }
