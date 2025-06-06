@@ -2,7 +2,7 @@
   "name": "web-otp-demo",
   "version": "0.0.1",
   "description": "A demo of WebOTP API.",
-  "main": "",
+  "main": "index.js",
   "scripts": {
     "build": "webpack",
     "deploy": "npm run build && gsutil -m rsync -rd public gs://chrome-dev-demos/public/web-otp-demo"
@@ -24,7 +24,11 @@
     "webpack-cli": "^3.3.12"
   },
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "keywords": [
+    "node",
+    "express"
+  ]
 }
