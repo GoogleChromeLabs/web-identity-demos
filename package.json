@@ -1,0 +1,23 @@
+{
+  "name": "web-identity-demos",
+  "version": "1.0.0",
+  "description": "Demos for identity and security on the web.  Built by the Chrome Developer Relations team and friends.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoogleChromeLabs/web-identity-demos.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GoogleChromeLabs/web-identity-demos/issues"
+  },
+  "homepage": "https://github.com/GoogleChromeLabs/web-identity-demos#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

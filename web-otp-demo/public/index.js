@@ -5,10 +5,6 @@ const verify = document.querySelector('#verify');
 const sb = document.querySelector('#snackbar');
 const install = document.querySelector('#install');
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
-
 const snackbarAlert = text => {
   sb.labelText = text;
   sb.show();
@@ -33,13 +29,3 @@ if (!window.OTPCredential) {
 message.innerText = `Your OTP is: 123456.
 
 @${window.location.host} #123456`;  
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  let installEvent = e;
-  install.classList.remove('invisible');
-  install.addEventListener('click', async () => {
-    installEvent.prompt();
-    // install.classList.add('invisible');
-  });
-});
