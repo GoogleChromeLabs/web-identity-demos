@@ -20,7 +20,7 @@
     "@babel/core": "^7.27.4",
     "babel-loader": "^8.4.1",
     "babel-preset-env": "^1.7.0",
-    "webpack": "^4.47.0",
+    "webpack": "^5.99.9",
     "webpack-cli": "^3.3.12"
   },
   "engines": {
