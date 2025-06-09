@@ -2,17 +2,12 @@
   "name": "web-otp-demo",
   "version": "0.0.1",
   "description": "A demo of SMS Receiver API.",
-  "main": "index.js",
+  "main": "",
   "scripts": {
-    "start": "node index.js",
-    "build": "webpack -p",
-    "deploy": "npm run build && gcloud functions deploy web-otp-demo --project web-devrel-apps --runtime nodejs20 --trigger-http"
+    "build": "webpack",
+    "deploy": "npm run build"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "twilio": "^4.23.0",
-    "hbs": "^4.2.0",
-    "request": "^2.88.2",
     "@material/mwc-button": "^0.27.0",
     "@material/mwc-textfield": "^0.27.0",
     "@material/mwc-icon-button": "^0.27.0",
@@ -35,8 +30,6 @@
   },
   "license": "MIT",
   "keywords": [
-    "node",
-    "glitch",
-    "express"
+    "glitch"
   ]
 }

@@ -9,5 +9,5 @@ const snackbarAlert = text => {
 snackbarAlert('You are successfully verified!');
 
 back.addEventListener('click', e => {
-  location.href = '/';
+  location.href = 'index.html';
 });

@@ -24,7 +24,7 @@ const submit = e => {
   cont.disabled = true;
   snackbarAlert('Verifying...');
   setTimeout(() => {
-    form.submit();
+    window.location.href = form.action;
   }, 1000);
 };
 
@@ -55,5 +55,5 @@ if ('OTPCredential' in window) {
 cont.addEventListener('click', submit);
 
 cancel.addEventListener('click', e => {
-  location.href = '/';
+  location.href = 'index.html';
 });

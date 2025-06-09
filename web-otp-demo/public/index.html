@@ -21,36 +21,21 @@
       <mwc-linear-progress id="progress"></mwc-linear-progress>
     </mwc-top-app-bar-fixed>
     <main class="content">
-      <form id="otp-form" class="mdc-form-field" action="/result" method="POST">
-        <h2>Verify your phone number</h2>
-        <p>
-          Enter the 6-digit you received
-          <span id="phone-number"></span>
-        </p>
-        <div id="otp-field" class="mdc-text-field">
-          <input type="text"
-                 inputmode="numeric"
-                 is="web-otp"
-                 id="otp-input"
-                 class="mdc-text-field__input"
-                 autocomplete="one-time-code"
-                 pattern="^([0-9]+)$"
-                 required/>
-          <div class="mdc-notched-outline">
-            <div class="mdc-notched-outline__leading"></div>
-            <div class="mdc-notched-outline__notch">
-              <label for="otp-input" class="mdc-floating-label">6-digit code</label>
-            </div>
-            <div class="mdc-notched-outline__trailing"></div>
-          </div>
+      <form id="phone-form" class="visible mdc-form-field" action="verify.html" method="GET">
+        <h2>Send following SMS message to this phone from another one after pressing "Verify".</h2>
+        <pre id="message"></pre>
+        <div>
+          <mwc-button id="copy">Copy</mwc-button>
+          <mwc-button id="verify" raised>Verify</mwc-button>
         </div>
         <div>
-          <mwc-button id="cancel">Cancel</mwc-button>
-          <mwc-button id="continue" raised>Continue</mwc-button>
+          <p id="unsupported" class="invisible">
+            Your browser does not support Web OTP API. To try out the API, use Google Chrome 82 or later on mobile.
+          </p>
         </div>
       </form>
     </main>
     <mwc-snackbar id="snackbar"></mwc-snackbar>
-    <script src="/verify.js" defer></script>
+    <script src="/index.js" defer></script>
   </body>
 </html>
