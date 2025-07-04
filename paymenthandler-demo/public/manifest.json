@@ -1,0 +1,29 @@
+{
+  "name": "payment handler demo",
+  "short_name": "payment handler",
+  "description": "This is an example implementation of the Payment Handler API.",
+  "icons": [
+    {
+      "src": "https://cdn.glitch.com/2679350d-65ff-4d8b-a9e1-8e275ae75d09%2Ficon-192x192.png?v=1590207706462",
+      "sizes": "192x192",
+      "type": "image/svg"
+    },
+    {
+      "src": "https://cdn.glitch.com/2679350d-65ff-4d8b-a9e1-8e275ae75d09%2Ficon-512x512.png?v=1590207245192",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "serviceworker": {
+    "src": "service-worker.js"
+  },
+  "payment": {
+    "supported_delegations": [
+      "shippingAddress", "payerName", "payerEmail", "payerPhone"
+    ]
+  },
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#33AA33",
+  "background_color": "#33AA33"
+  }

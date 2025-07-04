@@ -1,0 +1,83 @@
+html, body {
+  font-family: Roboto;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+h2 {
+  margin-top: 50px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.demo-area {
+  max-width: 900px;
+  width: 100%;
+}
+
+.form-area {
+  margin: 30px 0;
+}
+
+/* #button_slot {
+  width: 250px;
+  min-height: 50px;
+  margin-bottom: 20px;
+  text-align: center;
+  align-self: center;
+} */
+
+#buttons * {
+  cursor: pointer;
+}
+
+.shipping-options {
+  opacity: 1.0;
+  transition-property: opacity;
+  transition-duration: 0.5s;
+}
+
+.is-disabled {
+  opacity: 0.2;
+  touch-action: none;
+  pointer-events: none;  
+}
+
+code {
+  background-color: #eeeeee;
+  padding: 4px;
+}
+
+pre {
+  overflow: scroll;
+  background-color: #eeeeee;
+  padding: 8px;
+}
+
+mwc-button {
+   --mdc-typography-button-text-transform: default;
+  height: 32px;
+  background-color: transparent;
+}
+
+.footer {
+  color: #fff;
+  width: 100%;
+  background-color: #555;
+}
+
+.footer a {
+  color: #fff;
+}

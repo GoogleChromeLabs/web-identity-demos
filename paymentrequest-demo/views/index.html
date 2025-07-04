@@ -1,0 +1,125 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Web Payment Merchant Demo</title>
+    <meta name="description" content="Web Payment Merchant Demo">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/@material/layout-grid@7.0.0/dist/mdc.layout-grid.min.css">
+    <script src="/components-bundle.js" type="module"></script>
+    <script>
+      window.process = {
+        env: { NODE_ENV: 'production' }
+      }
+    </script>
+  </head>
+  <body>
+    <mwc-top-app-bar-fixed>
+      <span slot="title">Payment Request API Demo</span>
+    </mwc-top-app-bar-fixed>
+    <main>
+      <div class="demo-area">
+        <div class="">
+          <section class="mdc-layout-grid">
+            <p>This demo allows you to play with the various options, inputs and
+            payment methods you can provide to the PaymentRequest API.</p>
+            <p>Please note that this demo <strong>will not charge you</strong>.
+            It'll simply go through the payment process and print the details at
+            the bottom of this page.</p>
+            <p>The values will not add up in the total since the <strong>Payment
+            Request API does no calculations</strong>.</p>
+
+            <h2>Display Items</h2>
+            <p>It's possible to define any number of display items in the
+            Payment Request UI.</p>
+            <p>It's up to the merchant to ensure that the list of items equals
+            the total value shown in the order summary, the Payment Request API
+            performs no calculations.</p>
+            <p><em>Try adding both valid and invalid amounts in the display
+            items and the summary total to see the differences.</em></p>
+
+            <div id="display-items-container"></div>
+
+            <h2>Order Summary</h2>
+            <p>The order summary is the value that is shown most prominently to
+            the user, it should be treated as the total of the users
+            transaction.</p>
+            <p><em>Change the name, total and currency to see how it effects the
+            UI.</em></p>
+
+            <div id="total-container"></div>
+
+            <h2>Options</h2>
+            <p>The API can also request information for the user. The type of
+            transaction will determine will often dictate what is needed.</p>
+
+            <div id="options-container"></div>
+
+            <!-- <h2>Can Make Payment</h2>
+            <p>You can call <code>paymentRequest.canMakePayment()</code> before calling <code>paymentRequest.show()</code>
+            to determine if the PaymentRequest object can be used to make a payment.</p>
+
+            <mwc-button raised>Can Make Payment</mwc-button>
+
+            <h2>paymentRequest.canMakePayment() Result</h2>
+            <p>If you call <code>canMakePayment()</code>, the result will be printed below.</p>
+
+            <div class="can-make-payment-result-container">
+              <pre>Press the "Can Make Payment" button.</pre>
+            </div> -->
+
+            <h2>Call Payment Request</h2>
+            <p>The Payment Request API has a range of supported payment
+            methods.</p>
+
+            <p>When you are ready to request payment from the user, you call
+            <code>paymentRequest.show()</code>, which is what will happen when
+            you click one of "Pay" buttons below.</p>
+
+            <div id="payment-methods-container"></div>
+
+            <h2>paymentRequest.show() Result</h2>
+            <p>If you complete a "purchase" with the payment request API, the
+            result will be printed below.</p>
+
+            <div id="payment-request-result-container">
+              <pre>Press the "Buy Now" button.</pre>
+            </div>
+
+          </section>
+        </div>
+      </div>
+      <footer class="footer mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell">
+          <ul class="mdl-mini-footer--link-list">
+            <li><a href="https://github.com/GoogleChromeLabs/paymentrequest-show">Github</a></li>
+          </ul>
+        </div>
+      </footer>
+    </main>
+    <mwc-snackbar id="snackbar"></mwc-snackbar>
+
+    <script src="/payment-method/google-pay.js"></script>
+    <script src="/payment-method/basic-card.js"></script>
+    <!-- <script src="/payment-method/paypal.js"></script> -->
+    <!-- <script src="/payment-method/line-pay.js"></script> -->
+    <script src="/payment-method/sample-pay.js"></script>
+    <script src="/demo.js" type="module"></script>
+    <!-- <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()" async></script> -->
+  </body>
+</html>
