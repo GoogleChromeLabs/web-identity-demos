@@ -4,12 +4,12 @@
   "description": "Cross-Origin Isolation Demo",
   "main": "server.js",
   "scripts": {
-    "dev": "node loca-server.js",
+    "dev": "node local-server.js",
     "start": "node server.js",
     "build": "rollup -c",
-    "deploy": "npm run build && npm run upload && npm run ff",
-    "upload": "gsutil -m rsync -rd public gs://chrome-dev-demos/public/cross-origin-isolation",
-    "ff": "gcloud functions deploy cross-origin-isolation --project=web-devrel-apps --runtime nodejs20 --trigger-http --no-gen2"
+    "deploy": "npm run build && npm run upload",
+    "publicise": "gcloud functions add-invoker-policy-binding cross-origin-isolation --member=allUsers --project=web-devrel-apps",
+    "upload": "gcloud functions deploy cross-origin-isolation --project=web-devrel-apps --runtime nodejs20 --trigger-http"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^4.0.0",
