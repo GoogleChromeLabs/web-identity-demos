@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Cross-Origin Isolation Playground</title>
+    <meta name="description" content="A cool thing made with Glitch">
+    <link id="favicon" rel="icon" nonce="{{nonce}}" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/bundle.js" nonce="{{nonce}}" type="module" defer></script>
+    <meta name="google-signin-client_id" content="{{client_id}}">
+    <script src="https://accounts.google.com/gsi/client" nonce="{{nonce}}"></script>
+    <script src="/global.js" nonce="{{nonce}}"></script>
+  </head>
+  <body>
+    <main>
+      <h1>
+      Cross-Origin Isolation Playground
+      </h1>
+      <p>
+        Try various security headers and see how it affects loading of cross-origin contents.
+      </p>
+      <p>
+        Reports will be sent to <a href="{{reporting_service}}" target="_blank">{{reporting_endpoint}}</a>.<br/>
+        Open the page and wait for the reports to show up. Reload not needed.
+      </p>
+      <div>
+        <form>
+          <h2>
+            Set HTTP headers for this page.
+          </h2>
+          <div id="main_container"></div>
+          <h2>
+            Test identity federation with iframe and 3p cookie
+          </h2>
+          <div id="gis_container"></div>
+          <h2>
+            Set various headers for a cross-origin image.
+          </h2>
+          <div id="image_container"></div>
+          <h2>
+            Set various headers for a cross-origin iframe.
+          </h2>
+          <div id="iframe_container"></div>
+          <h2>
+            Set various headers for a cross-origin popup window.
+          </h2>
+          <div id="popup_container"></div>
+          <h2>
+            Set various headers for a same-origin worker script.
+          </h2>
+          <div id="fp_worker_container"></div>
+          <h2>
+            Learn more
+          </h2>
+          <ul>
+            <li><a href="https://web.dev/security-headers/">Security Headers Quick Reference</a></li>
+            <li><a href="https://web.dev/coop-coep/">Making your website "cross-origin isolated" using COOP and COEP</a></li>
+            <li><a href="https://web.dev/why-coop-coep/">Why you need "cross-origin isolated" for powerful features</a></li>
+            <li><a href="https://web.dev/cross-origin-isolation-guide/">A guide to enable cross-origin isolation</a></li>
+            <li><a href="https://developer.chrome.com/blog/enabling-shared-array-buffer/">SharedArrayBuffer updates in Android Chrome 88 and Desktop Chrome 92</a></li>
+            <li><a href="https://developer.chrome.com/blog/coep-credentialless-origin-trial/">Load cross-origin resources without CORP headers using `COEP: credentialless`</a></li>
+            <li><a href="https://developer.chrome.com/blog/iframe-credentialless/">Iframe credentialless: Easily embed iframes in COEP environments</a></li>
+          </ul>
+        </form>
+      </main>
+      <hr />
+      <p>Created by <a href="https://twitter.com/agektmr">@agektmr</a>. See <a href="https://github.com/GoogleChromeLabs/web-identity-demos/tree/main/cross-origin-isolation">the code of this page here</a>.</p>
+      <mwc-snackbar id="toast"></mwc-snackbar>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+* {
+  font-family: Roboto;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  margin-top: 2em;
+}
+
+code {
+  font-family: monospace;
+}
+
+fieldset {
+  margin-bottom: 10px;
+  background-color: #eeeeff;
+  border: transparent;
+}
+
+input {
+  margin: 10px 0;
+}
+
+input, select {
+  display: inline-block;
+}
+
+table {
+  width: 440px;
+  border: 3px ridge;
+}
+
+iframe {
+  border: solid #aaa 1px;
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+  margin-right: 10px;
+}
+
+#google-signin {
+  background-size: contain;
+  width: 192px;
+  height: 46px;
+}
+
+#google-signin.signed-in {
+  background-image: url(https://cdn.glitch.com/c9d581fc-301d-4a99-ac53-b3accbe37586%2Fbtn_google_signin_dark_disabled_web%402x.png?v=1610625088824);
+}
+
+#google-signin.signed-out {
+  background-image: url(https://cdn.glitch.com/c9d581fc-301d-4a99-ac53-b3accbe37586%2Fbtn_google_signin_dark_normal_web%402x.png?v=1610624766674);
+}

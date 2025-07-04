@@ -1,0 +1,25 @@
+let subworker;
+
+function sendMessage() {
+  try {
+    self.postMessage({ message: 'A same-origin worker is successfully spawned.' });
+  } catch (e) {
+    alert('Failed to spawn a worker');
+  }
+}
+
+self.onmessage = function(e) {
+  const { url, fp_message, message } = e.data;
+  if (url || subworker) {
+    subworker = importScripts(url);
+    subworker.addEventListener('message', e => {
+      self.postMessage({ message: e.data.message });
+    });
+  } else if (fp_message) {
+    sendMessage();
+  } else {
+    subworker.postMessage({ message });
+  }
+}
+
+sendMessage();

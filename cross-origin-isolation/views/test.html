@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <script src="/test.js"></script>
+    <script src="https://third-party-test.glitch.me/test.js"></script>
+  </head>
+  <body>
+    <div id="container">
+    </div>
+    <script>
+      const div1 = document.createElement('div');
+      div1.innerText = localStorage.getItem('testStorage1');
+      const div2 = document.createElement('div');
+      div2.innerText = localStorage.getItem('testStorage2');
+
+      const container = document.querySelector('#container');
+      container.appendChild(div1);
+      container.appendChild(div2);
+    </script>
+  </body>
+</html>

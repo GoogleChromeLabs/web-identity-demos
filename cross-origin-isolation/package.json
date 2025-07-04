@@ -1,0 +1,44 @@
+{
+  "name": "cross-origin-isolation",
+  "version": "0.0.1",
+  "description": "Cross-Origin Isolation Demo",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node loca-server.js",
+    "start": "node server.js",
+    "build": "rollup -c",
+    "deploy": "npm run build && npm run upload && npm run ff",
+    "upload": "gsutil -m rsync -rd public gs://chrome-dev-demos/public/cross-origin-isolation",
+    "ff": "gcloud functions deploy cross-origin-isolation --project=web-devrel-apps --runtime nodejs20 --trigger-http --no-gen2"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^4.0.0",
+    "@material/mwc-button": "^0.27.0",
+    "@material/mwc-snackbar": "^0.27.0",
+    "@rollup/plugin-commonjs": "^21.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "cookie-parser": "^1.4.7",
+    "crypto": "^1.0.1",
+    "express": "^4.21.2",
+    "google-auth-library": "^7.14.1",
+    "hbs": "^4.2.0",
+    "helmet-csp": "^3.4.0",
+    "lit": "^2.8.0",
+    "lit-html": "^1.4.1",
+    "path": "^0.12.7",
+    "rollup": "^2.79.2",
+    "uid-safe": "^2.1.5",
+    "wasm-feature-detect": "^1.8.0"
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "repository": {
+    "url": "https://github.com/GoogleChromeLabs/web-identity-demos"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express"
+  ]
+}
