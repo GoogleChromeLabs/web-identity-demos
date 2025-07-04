@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #6202ee0d;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.report {
+  padding: 1rem 0;
+}
+
+code {
+  font-weight: bold;
+  font-size: 1.4rem;
+  user-select: text;
+}
+
+/* COOP/COEP BADGES */
+
+.badge {
+  background: red;
+  color: white;
+  padding: 1px 6px;
+  border-radius: 34px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 80%;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+}
+
+.badge.coep {
+  background: #b335ff;
+}
+
+.badge.coop {
+  background: #00a07d;
+}
+
+
+/* TABLES */
+
+.mdc-data-table {
+  border-radius: 8px;
+  width: 100%;
+}
+
+.mdc-data-table__table {
+  white-space: normal;
+}
+
+.mdc-data-table__cell {
+  max-width: 500px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+th.mdc-data-table__header-cell {
+  color: var(--mdc-theme-text-secondary-on-light);
+  text-transform: uppercase;
+  font-size: 80%;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  line-height: 1rem !important;
+}
+
+.mdc-data-table__header-row {
+  height: 30px;
+}
+
+/* EXTRA REPORT INFORMATION */
+
+.report-from-url {
+  padding: .5rem 0;
+  font-size: 80%;
+}
+
+.from {
+  text-transform: uppercase;
+  color: var(--mdc-theme-text-secondary-on-light);
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  margin: 0 .4rem 0 .2rem;
+}

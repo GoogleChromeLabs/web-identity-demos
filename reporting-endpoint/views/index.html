@@ -1,0 +1,37 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A cool thing made with Glitch">
+
+    <title>Reporting Endpoint</title>
+
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@3.1.1/dist/material-components-web.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/@material/mwc-top-app-bar-fixed?module" type="module" async defer></script>
+    <script src="https://unpkg.com/@material/mwc-linear-progress?module" type="module" async defer></script>
+    <script src="https://unpkg.com/socket.io-client@2.3.0/dist/socket.io.js"></script>
+  </head>
+  <body class="mdc-typography">
+    <mwc-top-app-bar-fixed>
+      <div slot="title">
+        Reports
+      </div>
+      <mwc-linear-progress id="progress" indeterminate></mwc-linear-progress>
+    </mwc-top-app-bar-fixed>
+    <main class="content">
+      To receive reports and see them on this UI, point your reporting
+      endpoint to <code>{{reporting_endpoint}}</code>.
+      <h1></h1>
+      <div id="container"></div>
+    </main>
+  </body>
+  <script src="/script.js" type="module"></script>
+<!--   <script src="/bundle.js" type="module"></script> -->
+</html>
