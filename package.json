@@ -19,5 +19,6 @@
   "homepage": "https://github.com/GoogleChromeLabs/web-identity-demos#readme",
   "dependencies": {
     "express": "^5.1.0"
-  }
+  },
+  "packageManager": "pnpm@10.1.0+sha1.ab7948c89104fdd3fc88b5b391fa4b73fd800631"
 }
