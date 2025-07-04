@@ -11,7 +11,7 @@
     "build": "webpack -p"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.21.2",
     "line-pay": "^1.0.16",
     "uuid": "^8.3.0",
     "memory-cache": "^0.2.0",
