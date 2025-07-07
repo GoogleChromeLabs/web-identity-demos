@@ -1,7 +1,7 @@
 import { html, render, nothing } from 'lit';
 
-const FP_BASE_URL = 'https://cross-origin-isolation.glitch.me';
-const TP_BASE_URL = 'https://third-party-test.glitch.me';
+const FP_BASE_URL = 'https://chrome.dev/f/cross-origin-isolation/';
+const TP_BASE_URL = 'https://third-party-domain.appspot.com/cross-origin-isolation/';
 
 const renderOptions = (value, options) => {
   return html`${options.map(option =>

@@ -22,9 +22,9 @@ app.use(cookie());
 
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
-const reporting_service = 'https://chrome.dev/reporting-endpoint';
+const reporting_service = 'https://third-party-domain.appspot.com/reporting-endpoint';
 // const reporting_endpoint = 'https://742ee3e6f7d80ca065e6cc05f16b6947.report-uri.com/a/d/g';
-const reporting_endpoint = 'https://chrome.dev/reporting-endpoint/post';
+const reporting_endpoint = 'https://third-party-domain.appspot.com/reporting-endpoint/post';
 // const reporting_endpoint = 'https://2j1hmdh4.uriports.com/reports';
 
 app.use(async (req, res, next) => {
@@ -127,7 +127,7 @@ const csp = (req, res, next) => {
       objectSrc: [ "'none'" ],
       baseUri: [ "'none'" ],
       imgSrc: [ "*" ],
-      frameSrc: [ 'https://pay.google.com', 'https://accounts.google.com', 'https://third-party-test.glitch.me', '*' ],
+      frameSrc: [ 'https://pay.google.com', 'https://accounts.google.com', 'https://third-party-domain.appspot.com', '*' ],
       connectSrc: [ 'https://accounts.google.com', 'https://oauth.google.com' ],
       reportTo: [ 'uriports' ],
       // requireTrustedTypesFor: [ "'script'" ]
@@ -136,11 +136,6 @@ const csp = (req, res, next) => {
 }
 
 app.use((req, res, next) => {
-  if (req.get('x-forwarded-proto') &&
-     (req.get('x-forwarded-proto')).split(',')[0] === 'http') {
-    return res.redirect(301, `https://${process.env.PROJECT_DOMAIN}.glitch.me/${req.originalUrl}`);
-  }
-  req.protocol = 'https';
   res.locals.nonce = crypto.randomBytes(16).toString('hex');
   next();
 });
