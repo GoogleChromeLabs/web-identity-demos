@@ -4,8 +4,8 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 
-const src = path.join('public');
-const dst = path.join('public');
+const src = path.join('public', 'reporting-endpoint');
+const dst = path.join('public', 'reporting-endpoint');
 
 export default [{
   input: path.join(src, 'index.js'),

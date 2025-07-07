@@ -1,16 +1,9 @@
 const express = require("express");
-const app = express();
+const app = express.Router();
 const cors = require('cors');
-const hbs = require('hbs');
-app.set('view engine', 'html');
-app.engine('html', hbs.__express);
-app.set('views', './views');
-const server = app.listen(process.env.PORT);
-const io = require('socket.io').listen(server);
 
-app.use(express.static("public"));
-app.use(express.json({type: 'application/reports+json'})); 
 app.use(cors());
+app.use(express.json({type: 'application/reports+json'})); 
 
 app.post('/post', (req, res) => {
   console.log(req.body);
@@ -32,25 +25,30 @@ app.post('/post/:room', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.render('index.html', {
-    reporting_endpoint: `https://${req.hostname}/post/`
+  res.render('reporting-endpoint/index.html', {
+    reporting_endpoint: `https://${req.hostname}/reporting-endpoint/post/`
   });
 });
 
 app.get('/:room', (req, res) => {
   const paths = req.url.split('/');
   // TODO: Need escape
-  res.render('index.html', {
-    reporting_endpoint: `https://${req.hostname}/post/${paths[1]}`
+  res.render('reporting-endpoint/index.html', {
+    reporting_endpoint: `https://${req.hostname}/reporting-endpoint/post/${paths[1]}`
   });
 });
 
-io.on('connection', (socket) => {
-  const room = socket.handshake && socket.handshake.query && socket.handshake.query.room || '/';
-  socket.join(room);
-  console.log('joining room:', room);
-  socket.on('disconnect', () => {
-    socket.leave(room);
+function socket(server) {
+  const io = require('socket.io')(server);
+  io.on('connection', (socket) => {
+    const room = socket.handshake && socket.handshake.query && socket.handshake.query.room || '/';
+    socket.join(room);
+    console.log('joining room:', room);
+    socket.on('disconnect', () => {
+      socket.leave(room);
+    });
   });
-});
+  return io;
+}
 
+module.exports = { reportingEndpoint: app, socket };

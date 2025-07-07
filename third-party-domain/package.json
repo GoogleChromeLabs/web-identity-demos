@@ -1,42 +1,37 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-express",
+  "name": "third-party-domain",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "rollup -c rollup.config.js"
+    "start": "node index.js",
+    "build": "rollup -c rollup.config.js",
+    "deploy": "gcloud app deploy --project=third-party-domain app.yaml "
   },
   "dependencies": {
     "express": "^4.21.2",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.1",
+    "cookie-parser": "^1.4.7",
     "hbs": "^4.2.0",
     "cors": "^2.8.5",
     "lit": "^2.8.0",
     "path": "^0.12.7",
-    "rollup": "^2.58.0",
+    "rollup": "^2.79.2",
     "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "material-components-web": "^14.0.0",
     "@material/data-table": "^13.0.0",
-    "@material/mwc-top-app-bar-fixed": "^0.21.0",
+    "@material/mwc-top-app-bar-fixed": "^0.27.0",
     "@material/mwc-linear-progress": "^0.27.0"
   },
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
-  "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
-  },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": [
     "node",
-    "glitch",
     "express"
   ]
 }

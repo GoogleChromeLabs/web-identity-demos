@@ -1,0 +1,6 @@
+function sendMessage() {
+  self.postMessage({message: 'A subworker from "https://third-party-test.glitch.me" is successfully spawned.'});
+}
+
+sendMessage();
+this.onmessage = sendMessage;
