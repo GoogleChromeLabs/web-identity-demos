@@ -26,7 +26,7 @@
     "lit": "^2.8.0",
     "lit-html": "^1.4.1",
     "path": "^0.12.7",
-    "rollup": "^2.79.2",
+    "rollup": "^2.80.0",
     "uid-safe": "^2.1.5",
     "wasm-feature-detect": "^1.8.0"
   },
