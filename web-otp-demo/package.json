@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "deploy": "npm run build && gsutil -m rsync -rd public gs://chrome-dev-demos/public/web-otp-demo"
+    "deploy": "npm run build && gcloud storage rsync --recursive --delete-unmatched-destination-objects public gs://chrome-dev-demos/public/web-otp-demo"
   },
   "dependencies": {
     "@material/mwc-button": "^0.27.0",
