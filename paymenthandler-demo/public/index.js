@@ -21,18 +21,6 @@ registerBtn.addEventListener('click', async e => {
       return;
     }
 
-    // Fetch the customer's payment instruments
-    // In real world this should be done when the customer is signed in.
-    const paymentInstruments = await fetch('/user/payment-instruments').then(result => result.json());
-
-    // Register customer's payment instruments recursively
-    paymentInstruments.map(async instrument => {
-      await registration.paymentManager.instruments.set(instrument.id, {
-        name: instrument.label,
-        method: instrument.method,
-      });
-    });
-
     // Register this payment handler's delegation capabilities
     await registration.paymentManager.enableDelegations([
       'shippingAddress', 'payerName', 'payerPhone', 'payerEmail'
