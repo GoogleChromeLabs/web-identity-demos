@@ -1,20 +1,12 @@
 const origin = location.origin;
 
-class PromiseResolver {
-  constructor() {
-    this.promise_ = new Promise((resolve, reject) => {
-      this.resolve_ = resolve;
-      this.reject_ = reject;
-    })
-  }
-  get promise() { return this.promise_ } 
-  get resolve() { return this.resolve_ }
-  get reject() { return this.reject_ }
-}
-
 let payment_request_event;
 let resolver;
 let client;
+
+self.addEventListener('canmakepayment', e => {
+  e.respondWith(true);
+});
 
 // `self` is the global object in service worker
 self.addEventListener('paymentrequest', async e => {
@@ -27,8 +19,7 @@ self.addEventListener('paymentrequest', async e => {
   payment_request_event = e;
 
   // Retain a promise for future resolution
-  // Polyfill for PromiseResolver is provided below.
-  resolver = new PromiseResolver();
+  resolver = Promise.withResolvers();
 
   // Pass a promise that resolves when payment is done.
   e.respondWith(resolver.promise);
@@ -68,18 +59,18 @@ self.addEventListener('message', async e => {
         const newMethod = e.data.paymentMethod;
         const newDetails = e.data.methodDetails;
         details = await payment_request_event.changePaymentMethod(newMethod, newDetails);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       }
       case 'SHIPPING_ADDRESS_CHANGED':
         const newAddress = e.data.shippingAddress;
         details = await payment_request_event.changeShippingAddress(newAddress);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       case 'SHIPPING_OPTION_CHANGED':
         const newOption = e.data.shippingOptionId;
         details = await payment_request_event.changeShippingOption(newOption);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       case 'PAYMENT_AUTHORIZED': {
         // Resolve the payment request event promise
@@ -89,20 +80,20 @@ self.addEventListener('message', async e => {
           details: { id: 'payment credential comes here' },
         }
         let { paymentOptions } = payment_request_event;
-        if (paymentOptions.requestBillingAddress) {
-          response.details.billingAddress = e.data.methodData.billingAddress;
+        if (paymentOptions?.requestBillingAddress) {
+          response.details.billingAddress = e.data.methodData?.billingAddress;
         }
-        if (paymentOptions.requestShipping) {
+        if (paymentOptions?.requestShipping) {
           response.shippingAddress = e.data.shippingAddress;
           response.shippingOption = e.data.shippingOptionId;
         }
-        if (paymentOptions.requestPayerEmail) {
+        if (paymentOptions?.requestPayerEmail) {
           response.payerEmail = e.data.payerEmail;
         }
-        if (paymentOptions.requestPayerName) {
+        if (paymentOptions?.requestPayerName) {
           response.payerName = e.data.payerName;
         }
-        if (paymentOptions.requestPayerPhone) {
+        if (paymentOptions?.requestPayerPhone) {
           response.payerPhone = e.data.payerPhone;
         }
         resolver.resolve(response);
@@ -111,9 +102,9 @@ self.addEventListener('message', async e => {
         break;
       }
       case 'CANCEL_PAYMENT':
-        // Resolve the payment request event promise
-        // with null
-        resolver.resolve(null);
+        // Reject the payment request event promise so Chrome aborts the payment
+        // with AbortError and closes the payment window.
+        resolver.reject(new Error('Payment canceled by user'));
         // Don't forget to initialize.
         payment_request_event = null;
         break;
