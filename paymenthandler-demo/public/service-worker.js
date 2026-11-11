@@ -59,18 +59,18 @@ self.addEventListener('message', async e => {
         const newMethod = e.data.paymentMethod;
         const newDetails = e.data.methodDetails;
         details = await payment_request_event.changePaymentMethod(newMethod, newDetails);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       }
       case 'SHIPPING_ADDRESS_CHANGED':
         const newAddress = e.data.shippingAddress;
         details = await payment_request_event.changeShippingAddress(newAddress);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       case 'SHIPPING_OPTION_CHANGED':
         const newOption = e.data.shippingOptionId;
         details = await payment_request_event.changeShippingOption(newOption);
-        postMessage('UPDATE_REQUEST', details);
+        postMessage('UPDATE_REQUEST', details || {});
         break;
       case 'PAYMENT_AUTHORIZED': {
         // Resolve the payment request event promise
@@ -81,7 +81,7 @@ self.addEventListener('message', async e => {
         }
         let { paymentOptions } = payment_request_event;
         if (paymentOptions?.requestBillingAddress) {
-          response.details.billingAddress = e.data.methodData.billingAddress;
+          response.details.billingAddress = e.data.methodData?.billingAddress;
         }
         if (paymentOptions?.requestShipping) {
           response.shippingAddress = e.data.shippingAddress;
