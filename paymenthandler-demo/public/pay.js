@@ -92,8 +92,10 @@ const renderHTML = (total = {}, options = paymentOptions, shippingOptions = [], 
 const changePaymentMethod = e => {
   const instrument = paymentInstruments.find(instrument => instrument.id == e.target.value);
   postMessage('PAYMENT_METHOD_CHANGED', {
-    paymentMethod: instrument.paymentMethod,
-    methodDetails: instrument.methodDetails,
+    methodDetails: {
+      type: instrument.type,
+      billingAddress: instrument.billingAddress,
+    },
   });
 };
 
@@ -113,7 +115,6 @@ const changeShippingAddress = e => {
 const onPay = e => {
   const piId = document.querySelector('#payment-instrument').value;
   const instrument = paymentInstruments.find(instrument => instrument.id == piId);
-  const paymentMethod = instrument.paymentMethod;
 
   let shippingOptionId, shippingAddress;
   if (paymentOptions?.requestShipping) {
@@ -123,8 +124,8 @@ const onPay = e => {
   }
 
   postMessage('PAYMENT_AUTHORIZED', {
-    paymentMethod,                        // Payment method identifier
-    methodData: instrument.methodDetails, // Payment method details (e.g. billingAddress)
+    instrumentId: instrument.id,          // Selected instrument (internal to the payment app)
+    billingAddress: instrument.billingAddress,
     shippingOptionId,                     // Shipping option id
     shippingAddress,                      // shipping address object
     payerName: contacts.name,             // Payer name

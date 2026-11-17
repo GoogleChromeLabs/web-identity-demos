@@ -58,27 +58,21 @@ const addresses = [
   }
 ];
 
-const paymentMethods = [{
-  id: `credit-card-1`,
+const paymentInstruments = [{
+  id: 'credit-card-1',
   label: 'Credit Card: ****1234',
-  paymentMethod: 'https://card-issuer.example',
-  methodDetails: {
-    billingAddress: addresses[0]
-  }
+  type: 'card',
+  billingAddress: addresses[0]
 }, {
-  id: `credit-card-2`,
+  id: 'credit-card-2',
   label: 'Credit Card: ****5678',
-  paymentMethod: 'https://card-issuer.example',
-  methodDetails: {
-    billingAddress: addresses[1]
-  }
+  type: 'card',
+  billingAddress: addresses[1]
 }, {
-  id: `bank-card-1`,
-  label: `Bank X: ******456`,
-  paymentMethod: 'https://bank.example',
-  methodDetails: {
-    billingAddress: addresses[2]
-  }
+  id: 'bank-card-1',
+  label: 'Bank X: ******456',
+  type: 'bank',
+  billingAddress: addresses[2]
 }];
 
 router.get('/shipping-addresses', (req, res) => {
@@ -86,7 +80,7 @@ router.get('/shipping-addresses', (req, res) => {
 });
 
 router.get('/payment-instruments', (req, res) => {
-  res.json(paymentMethods);
+  res.json(paymentInstruments);
 });
 
 router.get('/contacts', (req, res) => {

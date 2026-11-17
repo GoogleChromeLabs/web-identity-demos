@@ -38,50 +38,69 @@ self.addEventListener('paymentrequest', async e => {
 });
 
 // Define a convenient `postMessage()` method
-const postMessage = (type, contents = {}) => {
-  if (client) client.postMessage({ type, ...contents });
+const postMessage = (type, contents = {}, target = client) => {
+  if (target) target.postMessage({ type, ...contents });
 }
 
 // Received a message from the frontend
 self.addEventListener('message', async e => {
+  if (!payment_request_event) return;
+
   let details;
   try {
     switch (e.data.type) {
       // `WINDOW_IS_READY` is a frontend's ready state signal
-      case 'WINDOW_IS_READY':
+      case 'WINDOW_IS_READY': {
         const { total, paymentOptions, shippingOptions } = payment_request_event;
         // Pass the payment details to the frontend
         postMessage('PAYMENT_IS_READY', {
           total, paymentOptions, shippingOptions
-        });
-        break;
-      case 'PAYMENT_METHOD_CHANGED': {
-        const newMethod = e.data.paymentMethod;
-        const newDetails = e.data.methodDetails;
-        details = await payment_request_event.changePaymentMethod(newMethod, newDetails);
-        postMessage('UPDATE_REQUEST', details || {});
+        }, e.source);
         break;
       }
-      case 'SHIPPING_ADDRESS_CHANGED':
+      case 'PAYMENT_METHOD_CHANGED': {
+        const methodName = payment_request_event.methodData.find(
+          method => method.supportedMethods === origin
+        )?.supportedMethods || origin;
+        const newDetails = e.data.methodDetails;
+        details = await payment_request_event.changePaymentMethod(methodName, newDetails);
+        if (details) {
+          postMessage('UPDATE_REQUEST', details, e.source);
+        }
+        break;
+      }
+      case 'SHIPPING_ADDRESS_CHANGED': {
         const newAddress = e.data.shippingAddress;
         details = await payment_request_event.changeShippingAddress(newAddress);
-        postMessage('UPDATE_REQUEST', details || {});
+        if (details) {
+          postMessage('UPDATE_REQUEST', details, e.source);
+        }
         break;
-      case 'SHIPPING_OPTION_CHANGED':
+      }
+      case 'SHIPPING_OPTION_CHANGED': {
         const newOption = e.data.shippingOptionId;
         details = await payment_request_event.changeShippingOption(newOption);
-        postMessage('UPDATE_REQUEST', details || {});
-        break;
-      case 'PAYMENT_AUTHORIZED': {
-        // Resolve the payment request event promise
-        // with a payment response object
-        const response = {
-          methodName: e.data.paymentMethod,
-          details: { id: 'payment credential comes here' },
+        if (details) {
+          postMessage('UPDATE_REQUEST', details, e.source);
         }
+        break;
+      }
+      case 'PAYMENT_AUTHORIZED': {
+        // Resolve the payment request event promise with a payment response
+        // whose methodName matches the payment method requested by the merchant.
+        const methodName = payment_request_event.methodData.find(
+          method => method.supportedMethods === origin
+        )?.supportedMethods || origin;
+        const response = {
+          methodName,
+          details: {
+            id: 'payment credential comes here',
+            instrumentId: e.data.instrumentId,
+          },
+        };
         let { paymentOptions } = payment_request_event;
         if (paymentOptions?.requestBillingAddress) {
-          response.details.billingAddress = e.data.methodData?.billingAddress;
+          response.details.billingAddress = e.data.billingAddress;
         }
         if (paymentOptions?.requestShipping) {
           response.shippingAddress = e.data.shippingAddress;
