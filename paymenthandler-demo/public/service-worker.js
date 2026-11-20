@@ -1,8 +1,15 @@
 const origin = location.origin;
 const activeRequests = new Map();
 
+// In a real payment app, check whether the user has a saved account or payment
+// instrument (for example, in IndexedDB or via an authenticated endpoint). If
+// your app always returns true, omit the 'canmakepayment' listener instead.
+async function hasSavedPaymentInstrument() {
+  return true;
+}
+
 self.addEventListener('canmakepayment', e => {
-  e.respondWith(true);
+  e.respondWith(hasSavedPaymentInstrument());
 });
 
 // `self` is the global object in service worker
@@ -33,6 +40,23 @@ const postMessage = (type, contents = {}, target) => {
   if (target) target.postMessage({ type, ...contents });
 }
 
+// Forward a change event to the merchant and relay any updated details back to
+// the payment window. Only one change call can be in flight per request;
+// overlapping calls reject with InvalidStateError.
+async function notifyMerchantChange(target, runChange) {
+  try {
+    const details = await runChange();
+    if (details) {
+      postMessage('UPDATE_REQUEST', details, target);
+    }
+  } catch (error) {
+    if (error.name === 'InvalidStateError') {
+      return;
+    }
+    throw error;
+  }
+}
+
 // Received a message from the frontend
 self.addEventListener('message', async e => {
   const id = e.data?.id;
@@ -40,7 +64,6 @@ self.addEventListener('message', async e => {
   if (!request) return;
 
   const { event: paymentRequestEvent, resolve, reject } = request;
-  let details;
   try {
     switch (e.data.type) {
       // `WINDOW_IS_READY` is a frontend's ready state signal
@@ -57,26 +80,26 @@ self.addEventListener('message', async e => {
           method => method.supportedMethods === origin
         )?.supportedMethods || origin;
         const newDetails = e.data.methodDetails;
-        details = await paymentRequestEvent.changePaymentMethod(methodName, newDetails);
-        if (details) {
-          postMessage('UPDATE_REQUEST', details, e.source);
-        }
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changePaymentMethod(methodName, newDetails),
+        );
         break;
       }
       case 'SHIPPING_ADDRESS_CHANGED': {
         const newAddress = e.data.shippingAddress;
-        details = await paymentRequestEvent.changeShippingAddress(newAddress);
-        if (details) {
-          postMessage('UPDATE_REQUEST', details, e.source);
-        }
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changeShippingAddress(newAddress),
+        );
         break;
       }
       case 'SHIPPING_OPTION_CHANGED': {
         const newOption = e.data.shippingOptionId;
-        details = await paymentRequestEvent.changeShippingOption(newOption);
-        if (details) {
-          postMessage('UPDATE_REQUEST', details, e.source);
-        }
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changeShippingOption(newOption),
+        );
         break;
       }
       case 'PAYMENT_AUTHORIZED': {
