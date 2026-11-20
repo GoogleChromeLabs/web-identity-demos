@@ -3,10 +3,11 @@ import { html, render } from 'https://unpkg.com/lit-html?module';
 const container = document.querySelector('#container');
 const payBtn = document.querySelector('#pay');
 const cancelBtn = document.querySelector('#cancel');
+const requestId = new URLSearchParams(location.search).get('id');
 
 const postMessage = (type, contents = {}) => {
   if (navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({ type, ...contents });
+    navigator.serviceWorker.controller.postMessage({ id: requestId, type, ...contents });
   }
 }
 
