@@ -46,14 +46,13 @@ const postMessage = (type, contents = {}, target) => {
 async function notifyMerchantChange(target, runChange) {
   try {
     const details = await runChange();
-    if (details) {
-      postMessage('UPDATE_REQUEST', details, target);
-    }
+    // details is null if the merchant made no changes; still reply so the
+    // payment window knows the update settled.
+    postMessage('UPDATE_REQUEST', details ?? {}, target);
   } catch (error) {
-    if (error.name === 'InvalidStateError') {
-      return;
-    }
-    throw error;
+    // Tell the payment window so it can clear loading state, revert, or retry
+    // (for example, on InvalidStateError when another change is in flight).
+    postMessage('PAYMENT_CHANGE_FAILED', { reason: error.name }, target);
   }
 }
 

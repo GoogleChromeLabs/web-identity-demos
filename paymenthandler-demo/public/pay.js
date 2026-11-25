@@ -37,6 +37,12 @@ if (navigator.serviceWorker) {
         shippingAddressErrors = e.data.shippingAddressErrors;
         renderHTML(total, paymentOptions, shippingOptions, error);
         break;
+      case 'PAYMENT_CHANGE_FAILED':
+        error = e.data.reason === 'InvalidStateError'
+          ? 'Waiting for a previous change to finish. Please try again.'
+          : `Could not update payment details (${e.data.reason}).`;
+        renderHTML(total, paymentOptions, shippingOptions, error);
+        break;
       default:
         break;
     }
