@@ -38,9 +38,9 @@ if (navigator.serviceWorker) {
         renderHTML(total, paymentOptions, shippingOptions, error);
         break;
       case 'PAYMENT_CHANGE_FAILED':
-        error = e.data.reason === 'InvalidStateError'
+        error = e.data.error?.name === 'InvalidStateError'
           ? 'Waiting for a previous change to finish. Please try again.'
-          : `Could not update payment details (${e.data.reason}).`;
+          : `Could not update payment details (${e.data.error?.message || e.data.error?.name || 'unknown error'}).`;
         renderHTML(total, paymentOptions, shippingOptions, error);
         break;
       default:

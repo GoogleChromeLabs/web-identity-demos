@@ -52,7 +52,7 @@ async function notifyMerchantChange(target, runChange) {
   } catch (error) {
     // Tell the payment window so it can clear loading state, revert, or retry
     // (for example, on InvalidStateError when another change is in flight).
-    postMessage('PAYMENT_CHANGE_FAILED', { reason: error.name }, target);
+    postMessage('PAYMENT_CHANGE_FAILED', { error }, target);
   }
 }
 
