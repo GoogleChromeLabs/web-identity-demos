@@ -4,13 +4,8 @@
   "description": "This is an example implementation of the Payment Handler API.",
   "icons": [
     {
-      "src": "https://cdn.glitch.com/2679350d-65ff-4d8b-a9e1-8e275ae75d09%2Ficon-192x192.png?v=1590207706462",
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAABYklEQVR42u3SQQ0AAAgDsXmaa1RigfBuUgWXS6fwFgkwEAbCQBgIDISBMBAGAgNhIAyEgcBAGAgDYSAwEAbCQBgIA4GBMBAGwkBgIAyEgTAQGAgDYSAMBAbCQBgIA2EgMBAGwkAYCAyEgTAQBgIDYSAMhIHAQBgIA2EgMBAGwkAYCAOBgTAQBsJAYCAMhIEwEBgIA2EgDAQGwkAYCANhIDAQBsJAGAgMhIEwEAYCA2EgDISBwEAYCANhIAwEBsJAGAgDgYEwEAbCQGAgDISBMBAYCANhIAwEBsJAGAgDYSAwEAbCQBgIDISBMBAGAgNhIAyEgcBAGAgDYSAMBAbCQBgIA4GBMBAGwkBgIAyEgTAQGAgDYSAMhIFUwEAYCANhIDAQBsJAGAgMhIEwEAYCA2EgDISBwEAYCANhIAwEBsJAGAgDgYEwEAbCQGAgDISBMBAYCANhIAyEgcBAGAgDYSC4WucbCPgrHt0YAAAAAElFTkSuQmCC",
       "sizes": "192x192",
-      "type": "image/svg"
-    },
-    {
-      "src": "https://cdn.glitch.com/2679350d-65ff-4d8b-a9e1-8e275ae75d09%2Ficon-512x512.png?v=1590207245192",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ],

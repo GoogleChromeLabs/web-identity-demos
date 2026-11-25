@@ -1,125 +1,149 @@
 const origin = location.origin;
+const activeRequests = new Map();
 
-class PromiseResolver {
-  constructor() {
-    this.promise_ = new Promise((resolve, reject) => {
-      this.resolve_ = resolve;
-      this.reject_ = reject;
-    })
-  }
-  get promise() { return this.promise_ } 
-  get resolve() { return this.resolve_ }
-  get reject() { return this.reject_ }
+// In a real payment app, check whether the user has a saved account or payment
+// instrument (for example, in IndexedDB or via an authenticated endpoint). If
+// your app always returns true, omit the 'canmakepayment' listener instead.
+async function hasSavedPaymentInstrument() {
+  return true;
 }
 
-let payment_request_event;
-let resolver;
-let client;
+self.addEventListener('canmakepayment', e => {
+  e.respondWith(hasSavedPaymentInstrument());
+});
 
 // `self` is the global object in service worker
 self.addEventListener('paymentrequest', async e => {
-  if (payment_request_event) {
-    // If there's an ongoing payment transaction, reject it
-    resolver.reject();
-  }
-
-  // Preserve the event for future use.
-  payment_request_event = e;
-
-  // Retain a promise for future resolution
-  // Polyfill for PromiseResolver is provided below.
-  resolver = new PromiseResolver();
+  // Track each request by ID so concurrent payment requests don't collide
+  // and stale messages from earlier windows are ignored.
+  const id = crypto.randomUUID();
+  const { promise, resolve, reject } = Promise.withResolvers();
+  activeRequests.set(id, { event: e, resolve, reject });
 
   // Pass a promise that resolves when payment is done.
-  e.respondWith(resolver.promise);
-  // Open the checkout page.
+  e.respondWith(promise);
+
+  // Open the checkout page with the request ID in the query string.
   try {
-    // Open the window and preserve the client
-    client = await e.openWindow('/pay');
+    const client = await e.openWindow(`/pay?id=${id}`);
     if (!client) {
-      // Reject if the window fails to open
-      throw 'Failed to open window.';
+      throw new DOMException('Failed to open window.', 'AbortError');
     }
   } catch (error) {
-    // Reject the promise on failure
-    resolver.reject(error);
+    activeRequests.delete(id);
+    reject(error);
   }
 });
 
 // Define a convenient `postMessage()` method
-const postMessage = (type, contents = {}) => {
-  if (client) client.postMessage({ type, ...contents });
+const postMessage = (type, contents = {}, target) => {
+  if (target) target.postMessage({ type, ...contents });
+}
+
+// Forward a change event to the merchant and relay any updated details back to
+// the payment window. Only one change call can be in flight per request;
+// overlapping calls reject with InvalidStateError.
+async function notifyMerchantChange(target, runChange) {
+  try {
+    const details = await runChange();
+    // details is null if the merchant made no changes; still reply so the
+    // payment window knows the update settled.
+    postMessage('UPDATE_REQUEST', details ?? {}, target);
+  } catch (error) {
+    // Tell the payment window so it can clear loading state, revert, or retry
+    // (for example, on InvalidStateError when another change is in flight).
+    postMessage('PAYMENT_CHANGE_FAILED', { error }, target);
+  }
 }
 
 // Received a message from the frontend
 self.addEventListener('message', async e => {
-  let details;
+  const id = e.data?.id;
+  const request = activeRequests.get(id);
+  if (!request) return;
+
+  const { event: paymentRequestEvent, resolve, reject } = request;
   try {
     switch (e.data.type) {
       // `WINDOW_IS_READY` is a frontend's ready state signal
-      case 'WINDOW_IS_READY':
-        const { total, paymentOptions, shippingOptions } = payment_request_event;
+      case 'WINDOW_IS_READY': {
+        const { total, paymentOptions, shippingOptions } = paymentRequestEvent;
         // Pass the payment details to the frontend
         postMessage('PAYMENT_IS_READY', {
           total, paymentOptions, shippingOptions
-        });
-        break;
-      case 'PAYMENT_METHOD_CHANGED': {
-        const newMethod = e.data.paymentMethod;
-        const newDetails = e.data.methodDetails;
-        details = await payment_request_event.changePaymentMethod(newMethod, newDetails);
-        postMessage('UPDATE_REQUEST', details);
+        }, e.source);
         break;
       }
-      case 'SHIPPING_ADDRESS_CHANGED':
+      case 'PAYMENT_METHOD_CHANGED': {
+        const methodName = paymentRequestEvent.methodData.find(
+          method => method.supportedMethods === origin
+        )?.supportedMethods || origin;
+        const newDetails = e.data.methodDetails;
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changePaymentMethod(methodName, newDetails),
+        );
+        break;
+      }
+      case 'SHIPPING_ADDRESS_CHANGED': {
         const newAddress = e.data.shippingAddress;
-        details = await payment_request_event.changeShippingAddress(newAddress);
-        postMessage('UPDATE_REQUEST', details);
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changeShippingAddress(newAddress),
+        );
         break;
-      case 'SHIPPING_OPTION_CHANGED':
+      }
+      case 'SHIPPING_OPTION_CHANGED': {
         const newOption = e.data.shippingOptionId;
-        details = await payment_request_event.changeShippingOption(newOption);
-        postMessage('UPDATE_REQUEST', details);
+        await notifyMerchantChange(
+          e.source,
+          () => paymentRequestEvent.changeShippingOption(newOption),
+        );
         break;
+      }
       case 'PAYMENT_AUTHORIZED': {
-        // Resolve the payment request event promise
-        // with a payment response object
+        // Resolve the payment request event promise with a payment response
+        // whose methodName matches the payment method requested by the merchant.
+        const methodName = paymentRequestEvent.methodData.find(
+          method => method.supportedMethods === origin
+        )?.supportedMethods || origin;
         const response = {
-          methodName: e.data.paymentMethod,
-          details: { id: 'payment credential comes here' },
+          methodName,
+          details: {
+            id: 'payment credential comes here',
+            instrumentId: e.data.instrumentId,
+          },
+        };
+        let { paymentOptions } = paymentRequestEvent;
+        if (paymentOptions?.requestBillingAddress) {
+          response.details.billingAddress = e.data.billingAddress;
         }
-        let { paymentOptions } = payment_request_event;
-        if (paymentOptions.requestBillingAddress) {
-          response.details.billingAddress = e.data.methodData.billingAddress;
-        }
-        if (paymentOptions.requestShipping) {
+        if (paymentOptions?.requestShipping) {
           response.shippingAddress = e.data.shippingAddress;
           response.shippingOption = e.data.shippingOptionId;
         }
-        if (paymentOptions.requestPayerEmail) {
+        if (paymentOptions?.requestPayerEmail) {
           response.payerEmail = e.data.payerEmail;
         }
-        if (paymentOptions.requestPayerName) {
+        if (paymentOptions?.requestPayerName) {
           response.payerName = e.data.payerName;
         }
-        if (paymentOptions.requestPayerPhone) {
+        if (paymentOptions?.requestPayerPhone) {
           response.payerPhone = e.data.payerPhone;
         }
-        resolver.resolve(response);
-        // Don't forget to initialize.
-        payment_request_event = null;
+        activeRequests.delete(id);
+        resolve(response);
         break;
       }
       case 'CANCEL_PAYMENT':
-        // Resolve the payment request event promise
-        // with null
-        resolver.resolve(null);
-        // Don't forget to initialize.
-        payment_request_event = null;
+        // Reject the payment request event promise so Chrome aborts the payment
+        // with AbortError and closes the payment window.
+        activeRequests.delete(id);
+        reject(new DOMException('Payment canceled by user', 'AbortError'));
         break;
     }
   } catch (error) {
-    resolver.reject();
-    payment_request_event = null;
+    activeRequests.delete(id);
+    reject(error);
   }
 });

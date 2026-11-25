@@ -3,10 +3,11 @@ import { html, render } from 'https://unpkg.com/lit-html?module';
 const container = document.querySelector('#container');
 const payBtn = document.querySelector('#pay');
 const cancelBtn = document.querySelector('#cancel');
+const requestId = new URLSearchParams(location.search).get('id');
 
 const postMessage = (type, contents = {}) => {
   if (navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage({ type, ...contents });
+    navigator.serviceWorker.controller.postMessage({ id: requestId, type, ...contents });
   }
 }
 
@@ -29,13 +30,17 @@ if (navigator.serviceWorker) {
         renderHTML(total, paymentOptions, shippingOptions);
         break;
       case 'UPDATE_REQUEST':
-        ({
-          error,
-          total,
-          shippingOptions,
-          paymentMethodErrors,
-          shippingAddressErrors,
-        } = e.data);
+        error = e.data.error || '';
+        if (e.data.total) total = e.data.total;
+        if (e.data.shippingOptions) shippingOptions = e.data.shippingOptions;
+        paymentMethodErrors = e.data.paymentMethodErrors;
+        shippingAddressErrors = e.data.shippingAddressErrors;
+        renderHTML(total, paymentOptions, shippingOptions, error);
+        break;
+      case 'PAYMENT_CHANGE_FAILED':
+        error = e.data.error?.name === 'InvalidStateError'
+          ? 'Waiting for a previous change to finish. Please try again.'
+          : `Could not update payment details (${e.data.error?.message || e.data.error?.name || 'unknown error'}).`;
         renderHTML(total, paymentOptions, shippingOptions, error);
         break;
       default:
@@ -75,7 +80,7 @@ const renderHTML = (total = {}, options = paymentOptions, shippingOptions = [], 
       <label for="shipping-option">Shipping Option</label>
       <select id="shipping-option" @change="${changeShippingOption}">
         ${shippingOptions.map(option => html`
-        <option value="${option.id}">${option.label}</option>
+        <option value="${option.id}" ?selected="${option.selected}">${option.label}</option>
         `)}
       </select>
     </div>
@@ -94,8 +99,10 @@ const renderHTML = (total = {}, options = paymentOptions, shippingOptions = [], 
 const changePaymentMethod = e => {
   const instrument = paymentInstruments.find(instrument => instrument.id == e.target.value);
   postMessage('PAYMENT_METHOD_CHANGED', {
-    paymentMethod: instrument.paymentMethod,
-    methodDetails: instrument.methodDetails,
+    methodDetails: {
+      type: instrument.type,
+      billingAddress: instrument.billingAddress,
+    },
   });
 };
 
@@ -115,22 +122,22 @@ const changeShippingAddress = e => {
 const onPay = e => {
   const piId = document.querySelector('#payment-instrument').value;
   const instrument = paymentInstruments.find(instrument => instrument.id == piId);
-  const paymentMethod = instrument.paymentMethod;
 
   let shippingOptionId, shippingAddress;
-  if (paymentOptions.requestShipping) {
+  if (paymentOptions?.requestShipping) {
     shippingOptionId = document.querySelector('#shipping-option').value;
     const addressId = document.querySelector('#shipping-address').value;
     shippingAddress = shippingAddresses.find(address => address.id == addressId);
   }
 
   postMessage('PAYMENT_AUTHORIZED', {
-    paymentMethod,              // Payment method identifier
-    shippingOptionId,           // Shipping option id
-    shippingAddress,            // shipping address object
-    payerName: contacts.name,   // Payer name
-    payerPhone: contacts.phone, // Payer Phone
-    payerEmail: contacts.email, // Payer Email
+    instrumentId: instrument.id,          // Selected instrument (internal to the payment app)
+    billingAddress: instrument.billingAddress,
+    shippingOptionId,                     // Shipping option id
+    shippingAddress,                      // shipping address object
+    payerName: contacts.name,             // Payer name
+    payerPhone: contacts.phone,           // Payer Phone
+    payerEmail: contacts.email,           // Payer Email
   });
 };
 
